@@ -25,6 +25,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarSeparator,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 const mainNav = [
@@ -43,8 +44,16 @@ const actions = [
 
 export function AppSidebar() {
   const { activePage, setActivePage, planos } = useApp()
+  const { isMobile, setOpenMobile } = useSidebar()
 
   const atrasados = planos.filter(p => p.status === "Atrasado").length
+
+  function handleMenuNavigation(page: ActivePage) {
+    setActivePage(page)
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }
 
   return (
     <Sidebar collapsible="icon">
@@ -53,7 +62,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              onClick={() => setActivePage("dashboard")}
+              onClick={() => handleMenuNavigation("dashboard")}
               className="cursor-pointer"
             >
               <div className="flex items-center justify-center size-10 rounded-lg overflow-hidden bg-sidebar-primary ring-2 ring-sidebar-ring shadow-sm">
@@ -81,7 +90,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton
                     isActive={activePage === item.key}
-                    onClick={() => setActivePage(item.key)}
+                    onClick={() => handleMenuNavigation(item.key)}
                     tooltip={item.label}
                     className="cursor-pointer"
                   >
@@ -107,7 +116,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton
                     isActive={activePage === item.key}
-                    onClick={() => setActivePage(item.key)}
+                    onClick={() => handleMenuNavigation(item.key)}
                     tooltip={item.label}
                     className="cursor-pointer"
                   >
