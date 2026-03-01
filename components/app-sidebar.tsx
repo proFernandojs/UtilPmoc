@@ -44,15 +44,13 @@ const actions = [
 
 export function AppSidebar() {
   const { activePage, setActivePage, planos } = useApp()
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { setOpenMobile } = useSidebar()
 
   const atrasados = planos.filter(p => p.status === "Atrasado").length
 
   function handleMenuNavigation(page: ActivePage) {
     setActivePage(page)
-    if (isMobile) {
-      setOpenMobile(false)
-    }
+    setOpenMobile(false)
   }
 
   return (
