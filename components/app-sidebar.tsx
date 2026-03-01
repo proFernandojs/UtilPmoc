@@ -60,7 +60,7 @@ export function AppSidebar() {
                 <img
                   src="/images/logo-util-pmoc.jpg"
                   alt="UTIL PMOC"
-                  className="size-8 object-cover"
+                  className="size-8 object-contain"
                 />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
