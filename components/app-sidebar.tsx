@@ -58,7 +58,7 @@ export function AppSidebar() {
             >
               <div className="flex items-center justify-center size-8 rounded-lg overflow-hidden bg-sidebar-primary">
                 <img
-                  src="/images/logo-util-pmoc.jpg"
+                  src="images/logo-util-pmoc.jpg"
                   alt="UTIL PMOC"
                   className="size-8 object-contain"
                 />

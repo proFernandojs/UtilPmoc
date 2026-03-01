@@ -90,7 +90,7 @@ export function QrCodeLabel({ equipamento, edificacao, ambiente, size = "medium"
         await new Promise<void>((resolve, reject) => {
           logoImg!.onload = () => resolve()
           logoImg!.onerror = () => reject()
-          logoImg!.src = "/images/logo-util-pmoc.jpg"
+          logoImg!.src = "images/logo-util-pmoc.jpg"
         })
       } catch {
         logoImg = null
