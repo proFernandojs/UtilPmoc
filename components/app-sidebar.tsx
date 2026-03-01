@@ -56,11 +56,11 @@ export function AppSidebar() {
               onClick={() => setActivePage("dashboard")}
               className="cursor-pointer"
             >
-              <div className="flex items-center justify-center size-14 rounded-xl overflow-hidden bg-sidebar-primary">
+              <div className="flex items-center justify-center size-12 rounded-xl overflow-hidden bg-sidebar-primary">
                 <img
                   src="/images/logo-util-pmoc.jpg"
                   alt="UTIL PMOC"
-                  className="size-14 rounded-xl object-cover"
+                  className="size-12 rounded-xl object-cover"
                 />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
