@@ -87,7 +87,6 @@ export function QrBaixaServicoCard() {
   const [isScanning, setIsScanning] = useState(false)
   const [scanResultType, setScanResultType] = useState<ScanResultType>("idle")
   const [scanMessage, setScanMessage] = useState("Aponte a camera para a etiqueta QR do equipamento para dar baixa no servico.")
-  const [lastDecodedText, setLastDecodedText] = useState("")
   const [pendingBaixa, setPendingBaixa] = useState<PendingBaixa | null>(null)
 
   async function stopScanner() {
@@ -133,8 +132,13 @@ export function QrBaixaServicoCard() {
     const ordem = findOpenOrder(ordensServico, equipamento.id)
 
     if (!ordem) {
+      const existeProgramacao = planos.some((p) => p.equipamentoId === equipamento.id)
       setScanResultType("warning")
-      setScanMessage(`Equipamento ${equipamento.tag} encontrado, mas sem OS aberta/em andamento para baixa.`)
+      setScanMessage(
+        existeProgramacao
+          ? `Nao ha programacao pendente para o aparelho ${equipamento.tag}.`
+          : `Nao tem nenhuma programacao para esse aparelho cadastrado (${equipamento.tag}).`
+      )
       handlingRef.current = false
       return
     }
@@ -192,7 +196,6 @@ export function QrBaixaServicoCard() {
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
         async (decodedText: string) => {
-          setLastDecodedText(decodedText)
           await handleDecoded(decodedText)
           await stopScanner()
         },
@@ -247,7 +250,7 @@ export function QrBaixaServicoCard() {
           {scanResultType === "warning" && (
             <Badge variant="secondary" className="gap-1">
               <AlertTriangle className="size-3" />
-              Sem OS pendente
+              Sem programacao
             </Badge>
           )}
 
@@ -297,9 +300,6 @@ export function QrBaixaServicoCard() {
           </div>
         )}
 
-        {lastDecodedText && (
-          <p className="text-xs text-muted-foreground/80 break-all">Ultimo QR lido: {lastDecodedText}</p>
-        )}
       </CardContent>
     </Card>
   )
