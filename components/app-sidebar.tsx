@@ -63,16 +63,16 @@ export function AppSidebar() {
               onClick={() => handleMenuNavigation("dashboard")}
               className="cursor-pointer"
             >
-              <div className="flex items-center justify-center size-10 rounded-lg overflow-hidden bg-sidebar-primary ring-2 ring-sidebar-ring shadow-sm">
+              <div className="flex items-center justify-center size-8 md:size-10 rounded-lg overflow-hidden bg-sidebar-primary ring-2 ring-sidebar-ring shadow-sm">
                 <img
                   src="images/logo-util-pmoc.jpg"
                   alt="UTIL PMOC"
-                  className="size-9 object-contain"
+                  className="size-7 md:size-9 object-contain"
                 />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-bold text-xs tracking-tight">UTIL PMOC</span>
-                <span className="text-[10px] text-sidebar-foreground/60">Gestao de Climatizacao</span>
+                <span className="font-bold text-[11px] md:text-xs tracking-tight">UTIL PMOC</span>
+                <span className="text-[9px] md:text-[10px] text-sidebar-foreground/60">Gestao de Climatizacao</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -90,7 +90,7 @@ export function AppSidebar() {
                     isActive={activePage === item.key}
                     onClick={() => handleMenuNavigation(item.key)}
                     tooltip={item.label}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-xs md:text-sm"
                   >
                     <item.icon className="size-4" />
                     <span>{item.label}</span>
@@ -116,7 +116,7 @@ export function AppSidebar() {
                     isActive={activePage === item.key}
                     onClick={() => handleMenuNavigation(item.key)}
                     tooltip={item.label}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-xs md:text-sm"
                   >
                     <item.icon className="size-4" />
                     <span>{item.label}</span>

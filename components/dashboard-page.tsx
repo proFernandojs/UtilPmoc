@@ -4,10 +4,12 @@ import { Building2, AirVent, ClipboardList, AlertTriangle, Users, CheckCircle2, 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useApp } from "@/lib/app-context"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, Pie, PieChart, Tooltip } from "recharts"
 
 export function DashboardPage() {
   const { edificacoes, equipamentos, planos, tecnicos, ordensServico, setActivePage } = useApp()
+  const isMobile = useIsMobile()
 
   const totalEdificacoes = edificacoes.length
   const totalEquipamentos = equipamentos.length
@@ -23,9 +25,9 @@ export function DashboardPage() {
 
   // Data for charts
   const statusData = [
-    { name: "Em Dia", value: planosEmDia, color: "var(--color-chart-2)" },
-    { name: "Atrasado", value: planosAtrasados, color: "var(--color-destructive)" },
-    { name: "Pendente", value: planosPendentes, color: "var(--color-chart-3)" },
+    { name: "Em Dia", value: planosEmDia, color: "var(--color-chart-2)", dotClass: "bg-chart-2" },
+    { name: "Atrasado", value: planosAtrasados, color: "var(--color-destructive)", dotClass: "bg-destructive" },
+    { name: "Pendente", value: planosPendentes, color: "var(--color-chart-3)", dotClass: "bg-chart-3" },
   ]
 
   const equipByEdificacao = edificacoes.map(ed => ({
@@ -76,27 +78,27 @@ export function DashboardPage() {
   ]
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 md:gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Visao geral do sistema de climatizacao</p>
+        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Visao geral do sistema de climatizacao</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 md:gap-4">
         {stats.map((stat) => (
           <Card
             key={stat.title}
             className={`cursor-pointer transition-shadow hover:shadow-md ${stat.alert ? 'border-destructive/50' : ''}`}
             onClick={stat.onClick}
           >
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-              <stat.icon className={`size-4 ${stat.alert ? 'text-destructive' : 'text-muted-foreground'}`} />
+            <CardHeader className="flex flex-row items-center justify-between pb-1 px-3 pt-3 md:pb-2 md:px-6 md:pt-6">
+              <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground line-clamp-1">{stat.title}</CardTitle>
+              <stat.icon className={`size-3.5 md:size-4 ${stat.alert ? 'text-destructive' : 'text-muted-foreground'}`} />
             </CardHeader>
-            <CardContent>
-              <div className={`text-3xl font-bold ${stat.alert ? 'text-destructive' : 'text-foreground'}`}>{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
+            <CardContent className="px-3 pb-3 md:px-6 md:pb-6">
+              <div className={`text-xl md:text-3xl font-bold ${stat.alert ? 'text-destructive' : 'text-foreground'}`}>{stat.value}</div>
+              <p className="text-[11px] md:text-xs text-muted-foreground mt-1 line-clamp-1">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -111,15 +113,15 @@ export function DashboardPage() {
             <CardDescription>Distribuicao dos planos de manutencao</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[220px] w-full">
+            <div className="h-[180px] md:h-[220px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={statusData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
+                    innerRadius={isMobile ? 36 : 50}
+                    outerRadius={isMobile ? 58 : 80}
                     paddingAngle={4}
                     dataKey="value"
                   >
@@ -138,10 +140,10 @@ export function DashboardPage() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex items-center justify-center gap-4 mt-2">
+            <div className="flex items-center justify-center gap-2 md:gap-4 mt-2 flex-wrap">
               {statusData.map((item) => (
                 <div key={item.name} className="flex items-center gap-1.5">
-                  <div className="size-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                  <div className={`size-2.5 rounded-full ${item.dotClass}`} />
                   <span className="text-xs text-muted-foreground">{item.name} ({item.value})</span>
                 </div>
               ))}
@@ -150,7 +152,7 @@ export function DashboardPage() {
         </Card>
 
         {/* Equipamentos por Edificacao */}
-        <Card>
+        <Card className="hidden md:block">
           <CardHeader>
             <CardTitle className="text-base">Equipamentos por Edificacao</CardTitle>
             <CardDescription>Quantidade de equipamentos cadastrados</CardDescription>
@@ -188,23 +190,23 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
-              {ordensServico.slice(0, 5).map((os) => {
+              {ordensServico.slice(0, isMobile ? 3 : 5).map((os) => {
                 const equip = equipamentos.find(e => e.id === os.equipamentoId)
                 const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
                 return (
-                  <div key={os.id} className="flex items-center gap-3 rounded-lg border border-border p-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-secondary">
+                  <div key={os.id} className="flex items-center gap-2 md:gap-3 rounded-lg border border-border p-2.5 md:p-3">
+                    <div className="flex items-center justify-center size-7 md:size-8 rounded-full bg-secondary">
                       {os.status === "Concluida" ? (
-                        <CheckCircle2 className="size-4 text-chart-2" />
+                        <CheckCircle2 className="size-3.5 md:size-4 text-chart-2" />
                       ) : os.status === "Em Andamento" ? (
-                        <Clock className="size-4 text-chart-3" />
+                        <Clock className="size-3.5 md:size-4 text-chart-3" />
                       ) : (
-                        <XCircle className="size-4 text-muted-foreground" />
+                        <XCircle className="size-3.5 md:size-4 text-muted-foreground" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-medium text-foreground truncate">{equip?.tag || os.equipamentoId}</p>
+                        <p className="text-xs md:text-sm font-medium text-foreground truncate">{equip?.tag || os.equipamentoId}</p>
                         <Badge variant={os.tipo === "Preventiva" ? "secondary" : "destructive"} className="text-[10px] shrink-0">
                           {os.tipo}
                         </Badge>
@@ -224,7 +226,7 @@ export function DashboardPage() {
                       >
                         {os.status}
                       </Badge>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{tecnico?.nome.split(' ').slice(0, 2).join(' ')}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5 hidden sm:block">{tecnico?.nome.split(' ').slice(0, 2).join(' ')}</p>
                     </div>
                   </div>
                 )
@@ -234,7 +236,7 @@ export function DashboardPage() {
         </Card>
 
         {/* Tecnicos */}
-        <Card>
+        <Card className="hidden md:block">
           <CardHeader>
             <CardTitle className="text-base">Equipe Tecnica</CardTitle>
             <CardDescription>{tecnicos.length} tecnicos cadastrados</CardDescription>
