@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/breadcrumb"
 
 const pageNames: Record<string, string> = {
-  dashboard: "Dashboard",
+  dashboard: "Util PMOC",
   edificacoes: "Edificacoes",
   equipamentos: "Equipamentos",
   planos: "Planos de Manutencao",
@@ -42,12 +42,21 @@ function AppContent() {
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border px-4">
-          <SidebarTrigger className="-ml-1" />
+          <div className="flex flex-col items-center">
+            <SidebarTrigger className="-ml-1" />
+            <span className="text-[10px] leading-none text-muted-foreground md:hidden">Menu</span>
+          </div>
           <Separator orientation="vertical" className="mr-2 !h-4" />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-sm font-medium">
+                <BreadcrumbPage
+                  className={
+                    activePage === "dashboard"
+                      ? "text-lg md:text-2xl font-extrabold text-foreground tracking-tight"
+                      : "text-sm font-medium"
+                  }
+                >
                   {pageNames[activePage] || "Dashboard"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
