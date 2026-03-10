@@ -32,6 +32,10 @@ export function DashboardPage() {
     return dataB - dataA
   })
 
+  const ordensRecentesPendentes = ordensRecentes.filter(
+    (os) => os.status !== "Concluida" && os.status !== "Cancelada"
+  )
+
   const osAbertas = ordensValidas.filter(o => o.status === "Aberta" || o.status === "Em Andamento").length
   const osConcluidas = ordensValidas.filter(o => o.status === "Concluida").length
 
@@ -202,7 +206,7 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
-              {ordensRecentes.slice(0, isMobile ? 3 : 5).map((os) => {
+              {ordensRecentesPendentes.slice(0, isMobile ? 3 : 5).map((os) => {
                 const equip = equipamentos.find(e => e.id === os.equipamentoId)
                 const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
                 return (
@@ -243,6 +247,9 @@ export function DashboardPage() {
                   </div>
                 )
               })}
+              {ordensRecentesPendentes.length === 0 && (
+                <p className="text-sm text-muted-foreground">Nenhuma ordem pendente no momento.</p>
+              )}
             </div>
           </CardContent>
         </Card>

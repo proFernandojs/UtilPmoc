@@ -34,6 +34,7 @@ import { QrBaixaServicoCard } from "@/components/qr-baixa-servico-card"
 export function OrdensPage() {
   const { ordensServico, equipamentos, tecnicos, planos, addOrdemServico, updateOrdemServico } = useApp()
   const [open, setOpen] = useState(false)
+  const [historicoFiltro, setHistoricoFiltro] = useState<"hoje" | "7dias" | "todas">("todas")
 
   const [form, setForm] = useState({
     equipamentoId: "",
@@ -99,6 +100,31 @@ export function OrdensPage() {
     const equipamentoExiste = equipamentos.some((eq) => eq.id === os.equipamentoId)
     const planoExiste = !os.planoId || planos.some((plano) => plano.id === os.planoId)
     return equipamentoExiste && planoExiste
+  })
+
+  const ordensPendentes = ordensValidas.filter(
+    (os) => os.status !== "Concluida" && os.status !== "Cancelada"
+  )
+  const ordensHistorico = ordensValidas.filter(
+    (os) => os.status === "Concluida" || os.status === "Cancelada"
+  )
+
+  const hojeIso = new Date().toISOString().split("T")[0]
+  const seteDiasAtras = new Date()
+  seteDiasAtras.setDate(seteDiasAtras.getDate() - 7)
+
+  const ordensHistoricoFiltradas = ordensHistorico.filter((os) => {
+    if (historicoFiltro === "todas") return true
+
+    const dataRef = os.dataConclusao || os.dataAbertura
+    if (!dataRef) return false
+
+    if (historicoFiltro === "hoje") {
+      return dataRef === hojeIso
+    }
+
+    const dataOs = new Date(dataRef)
+    return !Number.isNaN(dataOs.getTime()) && dataOs >= seteDiasAtras
   })
 
   const abertas = ordensValidas.filter(o => o.status === "Aberta").length
@@ -230,7 +256,7 @@ export function OrdensPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ordensValidas.map((os) => {
+                {ordensPendentes.map((os) => {
                   const equip = equipamentos.find(e => e.id === os.equipamentoId)
                   const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
                   return (
@@ -258,13 +284,9 @@ export function OrdensPage() {
                       <TableCell className="text-sm font-mono">{os.dataAbertura}</TableCell>
                       <TableCell className="text-sm font-mono">{os.dataConclusao || "-"}</TableCell>
                       <TableCell className="text-right">
-                        {os.status === "Concluida" || os.status === "Cancelada" ? (
-                          <span className="text-xs text-muted-foreground">Sem acao</span>
-                        ) : (
-                          <Button size="sm" onClick={() => handleBaixaDireta(os)}>
-                            Dar baixa
-                          </Button>
-                        )}
+                        <Button size="sm" onClick={() => handleBaixaDireta(os)}>
+                          Dar baixa
+                        </Button>
                       </TableCell>
                     </TableRow>
                   )
@@ -272,10 +294,100 @@ export function OrdensPage() {
               </TableBody>
             </Table>
           </div>
-          {ordensValidas.length === 0 && (
+          {ordensPendentes.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <Wrench className="size-8 mb-2" />
-              <p className="text-sm">Nenhuma ordem de servico registrada</p>
+              <p className="text-sm">Nenhuma ordem pendente no momento</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Historico */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="px-4 py-3 border-b border-border">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-sm font-semibold text-foreground">Historico de Ordens (Concluidas/Canceladas)</h2>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={historicoFiltro === "hoje" ? "default" : "outline"}
+                  onClick={() => setHistoricoFiltro("hoje")}
+                >
+                  Hoje
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={historicoFiltro === "7dias" ? "default" : "outline"}
+                  onClick={() => setHistoricoFiltro("7dias")}
+                >
+                  Ultimos 7 dias
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={historicoFiltro === "todas" ? "default" : "outline"}
+                  onClick={() => setHistoricoFiltro("todas")}
+                >
+                  Todas
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Status</TableHead>
+                  <TableHead>OS</TableHead>
+                  <TableHead>Tipo</TableHead>
+                  <TableHead>Equipamento</TableHead>
+                  <TableHead>Tecnico</TableHead>
+                  <TableHead>Descricao</TableHead>
+                  <TableHead>Abertura</TableHead>
+                  <TableHead>Conclusao</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {ordensHistoricoFiltradas.map((os) => {
+                  const equip = equipamentos.find(e => e.id === os.equipamentoId)
+                  const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
+                  return (
+                    <TableRow key={`hist-${os.id}`}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(os.status)}
+                          <Badge variant={getStatusBadge(os.status) as "default" | "secondary" | "outline" | "destructive"} className="text-[10px]">
+                            {os.status}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs font-medium">{os.id.toUpperCase()}</TableCell>
+                      <TableCell>
+                        <Badge variant={os.tipo === "Preventiva" ? "secondary" : "destructive"} className="text-[10px]">
+                          {os.tipo}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-mono text-xs">{equip?.tag}</div>
+                        <div className="text-xs text-muted-foreground">{equip?.marca}</div>
+                      </TableCell>
+                      <TableCell className="text-sm">{tecnico?.nome.split(' ').slice(0, 2).join(' ')}</TableCell>
+                      <TableCell className="text-sm max-w-[200px] truncate">{os.descricao}</TableCell>
+                      <TableCell className="text-sm font-mono">{os.dataAbertura}</TableCell>
+                      <TableCell className="text-sm font-mono">{os.dataConclusao || "-"}</TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
+          {ordensHistoricoFiltradas.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+              <p className="text-sm">Sem ordens para o filtro selecionado</p>
             </div>
           )}
         </CardContent>
