@@ -20,8 +20,20 @@ export function DashboardPage() {
 
   const totalBtu = equipamentos.reduce((acc, eq) => acc + eq.capacidadeBtu, 0)
 
-  const osAbertas = ordensServico.filter(o => o.status === "Aberta" || o.status === "Em Andamento").length
-  const osConcluidas = ordensServico.filter(o => o.status === "Concluida").length
+  const ordensValidas = ordensServico.filter((os) => {
+    const equipamentoExiste = equipamentos.some((eq) => eq.id === os.equipamentoId)
+    const planoExiste = !os.planoId || planos.some((plano) => plano.id === os.planoId)
+    return equipamentoExiste && planoExiste
+  })
+
+  const ordensRecentes = [...ordensValidas].sort((a, b) => {
+    const dataA = new Date(a.dataAbertura).getTime() || 0
+    const dataB = new Date(b.dataAbertura).getTime() || 0
+    return dataB - dataA
+  })
+
+  const osAbertas = ordensValidas.filter(o => o.status === "Aberta" || o.status === "Em Andamento").length
+  const osConcluidas = ordensValidas.filter(o => o.status === "Concluida").length
 
   // Data for charts
   const statusData = [
@@ -190,7 +202,7 @@ export function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
-              {ordensServico.slice(0, isMobile ? 3 : 5).map((os) => {
+              {ordensRecentes.slice(0, isMobile ? 3 : 5).map((os) => {
                 const equip = equipamentos.find(e => e.id === os.equipamentoId)
                 const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
                 return (

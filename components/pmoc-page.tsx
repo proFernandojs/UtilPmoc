@@ -161,20 +161,20 @@ export function PmocPage() {
           <CardContent className="p-6">
             <div ref={printRef}>
               {/* Header */}
-              <div className="pmoc-header" style={{ textAlign: "center", marginBottom: 24, borderBottom: "3px solid var(--color-primary)", paddingBottom: 16 }}>
-                <h1 style={{ fontSize: 20, fontWeight: 700, color: "var(--color-primary)" }}>PMOC - Plano de Manutencao, Operacao e Controle</h1>
-                <h2 style={{ fontSize: 14, color: "var(--color-muted-foreground)", fontWeight: 400, marginTop: 4 }}>{ed.nome}</h2>
-                <p style={{ fontSize: 11, color: "var(--color-muted-foreground)", marginTop: 6 }}>
+              <div className="pmoc-header mb-6 border-b-[3px] border-primary pb-4 text-center">
+                <h1 className="text-xl font-bold text-primary">PMOC - Plano de Manutencao, Operacao e Controle</h1>
+                <h2 className="mt-1 text-sm font-normal text-muted-foreground">{ed.nome}</h2>
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
                   Conforme Lei Federal no 13.589/2018 e Portaria MS no 3.523/1998
                 </p>
-                <p style={{ fontSize: 11, color: "var(--color-muted-foreground)" }}>
+                <p className="text-[11px] text-muted-foreground">
                   Gerado por UTIL PMOC em {new Date().toLocaleDateString("pt-BR")}
                 </p>
               </div>
 
               {/* 1. Dados da Edificacao */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   1. Dados da Edificacao
                 </h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
@@ -214,8 +214,8 @@ export function PmocPage() {
               </div>
 
               {/* 2. Ambientes Climatizados */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   2. Ambientes Climatizados
                 </h3>
                 <div className="overflow-x-auto">
@@ -245,8 +245,8 @@ export function PmocPage() {
               </div>
 
               {/* 3. Inventario de Equipamentos */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   3. Inventario de Equipamentos de Climatizacao
                 </h3>
                 <div className="overflow-x-auto">
@@ -287,8 +287,8 @@ export function PmocPage() {
               </div>
 
               {/* 4. Plano de Manutencao */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   4. Plano de Atividades de Manutencao
                 </h3>
                 <div className="overflow-x-auto">
@@ -326,8 +326,8 @@ export function PmocPage() {
               </div>
 
               {/* 5. Responsaveis Tecnicos */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   5. Responsaveis Tecnicos
                 </h3>
                 <div className="overflow-x-auto">
@@ -359,8 +359,8 @@ export function PmocPage() {
               </div>
 
               {/* 6. Parametros e Normas */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   6. Parametros de Qualidade do Ar e Normas Aplicaveis
                 </h3>
                 <div className="overflow-x-auto">
@@ -409,8 +409,8 @@ export function PmocPage() {
               </div>
 
               {/* Normas */}
-              <div className="section" style={{ marginBottom: 24 }}>
-                <h3 className="section-title" style={{ fontSize: 14, fontWeight: 700, color: "var(--color-primary)", marginBottom: 12, paddingBottom: 4, borderBottom: "1px solid var(--color-border)" }}>
+              <div className="section mb-6">
+                <h3 className="section-title mb-3 border-b border-border pb-1 text-sm font-bold text-primary">
                   7. Fundamentacao Legal
                 </h3>
                 <ul className="list-disc pl-5 text-xs text-muted-foreground flex flex-col gap-1.5">
@@ -424,14 +424,14 @@ export function PmocPage() {
               </div>
 
               {/* Signatures */}
-              <div style={{ marginTop: 60, display: "flex", justifyContent: "space-around" }}>
-                <div style={{ textAlign: "center", width: 200 }}>
+              <div className="mt-[60px] flex justify-around">
+                <div className="w-[200px] text-center">
                   <Separator className="mb-2" />
                   <p className="text-xs text-muted-foreground">Responsavel pela Edificacao</p>
                   <p className="text-xs text-foreground mt-1">{ed.responsavel}</p>
                 </div>
                 {edTecnicos[0] && (
-                  <div style={{ textAlign: "center", width: 200 }}>
+                  <div className="w-[200px] text-center">
                     <Separator className="mb-2" />
                     <p className="text-xs text-muted-foreground">Responsavel Tecnico</p>
                     <p className="text-xs text-foreground mt-1">{edTecnicos[0].nome}</p>
@@ -441,7 +441,7 @@ export function PmocPage() {
               </div>
 
               {/* Footer */}
-              <div style={{ marginTop: 30, textAlign: "center", fontSize: 10, color: "var(--color-muted-foreground)", borderTop: "1px solid var(--color-border)", paddingTop: 10 }}>
+              <div className="mt-[30px] border-t border-border pt-2.5 text-center text-[10px] text-muted-foreground">
                 <p>Documento gerado pelo sistema UTIL PMOC - {new Date().toLocaleDateString("pt-BR")} {new Date().toLocaleTimeString("pt-BR")}</p>
                 <p>Este documento atende aos requisitos da Lei Federal no 13.589/2018</p>
               </div>

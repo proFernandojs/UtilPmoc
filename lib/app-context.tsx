@@ -46,6 +46,7 @@ interface AppContextType {
   addPlano: (p: PlanoManutencao) => void
   addOrdemServico: (o: OrdemServico) => void
   updateOrdemServico: (id: string, updates: Partial<OrdemServico>) => void
+  updatePlano: (id: string, updates: Partial<PlanoManutencao>) => void
 
   removeEdificacao: (id: string) => void
   removeEquipamento: (id: string) => void
@@ -80,6 +81,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addTecnico = useCallback((t: Tecnico) => setTecnicos(prev => [...prev, t]), [])
   const addPlano = useCallback((p: PlanoManutencao) => setPlanos(prev => [...prev, p]), [])
   const addOrdemServico = useCallback((o: OrdemServico) => setOrdensServico(prev => [...prev, o]), [])
+  const updatePlano = useCallback((id: string, updates: Partial<PlanoManutencao>) => {
+    setPlanos(prev => prev.map(plano => plano.id === id ? { ...plano, ...updates } : plano))
+  }, [])
   const updateOrdemServico = useCallback((id: string, updates: Partial<OrdemServico>) => {
     setOrdensServico(prev => prev.map(ordem => ordem.id === id ? { ...ordem, ...updates } : ordem))
   }, [])
@@ -94,7 +98,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         activePage, setActivePage,
         edificacoes, ambientes, equipamentos, tecnicos, planos, ordensServico,
-        addEdificacao, addAmbiente, addEquipamento, addTecnico, addPlano, addOrdemServico, updateOrdemServico,
+        addEdificacao, addAmbiente, addEquipamento, addTecnico, addPlano, addOrdemServico, updateOrdemServico, updatePlano,
         removeEdificacao, removeEquipamento, removeTecnico, removePlano,
         selectedEdificacaoId, setSelectedEdificacaoId,
       }}

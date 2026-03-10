@@ -32,7 +32,7 @@ import type { OrdemServico } from "@/lib/store"
 import { QrBaixaServicoCard } from "@/components/qr-baixa-servico-card"
 
 export function OrdensPage() {
-  const { ordensServico, equipamentos, tecnicos, planos, addOrdemServico } = useApp()
+  const { ordensServico, equipamentos, tecnicos, planos, addOrdemServico, updateOrdemServico } = useApp()
   const [open, setOpen] = useState(false)
 
   const [form, setForm] = useState({
@@ -82,9 +82,28 @@ export function OrdensPage() {
     }
   }
 
-  const abertas = ordensServico.filter(o => o.status === "Aberta").length
-  const emAndamento = ordensServico.filter(o => o.status === "Em Andamento").length
-  const concluidas = ordensServico.filter(o => o.status === "Concluida").length
+  function handleBaixaDireta(os: OrdemServico) {
+    if (os.status === "Concluida" || os.status === "Cancelada") return
+
+    const observacaoBaixa = `Baixa manual na tela de ordens em ${new Date().toLocaleString("pt-BR")}`
+    const observacoes = os.observacoes ? `${os.observacoes}\n${observacaoBaixa}` : observacaoBaixa
+
+    updateOrdemServico(os.id, {
+      status: "Concluida",
+      dataConclusao: new Date().toISOString().split("T")[0],
+      observacoes,
+    })
+  }
+
+  const ordensValidas = ordensServico.filter((os) => {
+    const equipamentoExiste = equipamentos.some((eq) => eq.id === os.equipamentoId)
+    const planoExiste = !os.planoId || planos.some((plano) => plano.id === os.planoId)
+    return equipamentoExiste && planoExiste
+  })
+
+  const abertas = ordensValidas.filter(o => o.status === "Aberta").length
+  const emAndamento = ordensValidas.filter(o => o.status === "Em Andamento").length
+  const concluidas = ordensValidas.filter(o => o.status === "Concluida").length
 
   return (
     <div className="flex flex-col gap-6">
@@ -207,10 +226,11 @@ export function OrdensPage() {
                   <TableHead>Descricao</TableHead>
                   <TableHead>Abertura</TableHead>
                   <TableHead>Conclusao</TableHead>
+                  <TableHead className="text-right">Acoes</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ordensServico.map((os) => {
+                {ordensValidas.map((os) => {
                   const equip = equipamentos.find(e => e.id === os.equipamentoId)
                   const tecnico = tecnicos.find(t => t.id === os.tecnicoId)
                   return (
@@ -237,13 +257,22 @@ export function OrdensPage() {
                       <TableCell className="text-sm max-w-[200px] truncate">{os.descricao}</TableCell>
                       <TableCell className="text-sm font-mono">{os.dataAbertura}</TableCell>
                       <TableCell className="text-sm font-mono">{os.dataConclusao || "-"}</TableCell>
+                      <TableCell className="text-right">
+                        {os.status === "Concluida" || os.status === "Cancelada" ? (
+                          <span className="text-xs text-muted-foreground">Sem acao</span>
+                        ) : (
+                          <Button size="sm" onClick={() => handleBaixaDireta(os)}>
+                            Dar baixa
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   )
                 })}
               </TableBody>
             </Table>
           </div>
-          {ordensServico.length === 0 && (
+          {ordensValidas.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <Wrench className="size-8 mb-2" />
               <p className="text-sm">Nenhuma ordem de servico registrada</p>
